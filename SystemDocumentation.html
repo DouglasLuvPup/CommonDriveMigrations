@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Common Drive Migration - System Documentation</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #212529;
+            background: #f3f2f1;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .section {
+            background: #ffffff;
+            border-radius: 4px;
+            margin-top: 20px;
+            border: 1px solid #dee2e6;
+            padding: 24px 28px;
+        }
+        h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #0078d4;
+            margin: 0 0 16px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #ffc107;
+        }
+        h3 {
+            font-size: 15px;
+            font-weight: 600;
+            color: #0078d4;
+            margin: 20px 0 12px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 13px;
+        }
+        th {
+            background: #0078d4;
+            color: #ffffff;
+            padding: 10px 12px;
+            text-align: left;
+            border: 1px solid #0078d4;
+            font-weight: 600;
+        }
+        td {
+            padding: 10px 12px;
+            border: 1px solid #dee2e6;
+            color: #212529;
+            vertical-align: top;
+        }
+        tr:nth-child(even) td {
+            background: #f8f9fa;
+        }
+        .note {
+            font-size: 14px;
+            color: #212529;
+            background: #f8f9fa;
+            padding: 12px 16px;
+            border-left: 3px solid #ffc107;
+            border-radius: 0 4px 4px 0;
+            margin: 16px 0;
+        }
+        .note-info {
+            background: #e7f3ff;
+            border-left-color: #0078d4;
+        }
+        .note-warn {
+            background: #fff8e6;
+            border-left-color: #fd7e14;
+        }
+        .note-danger {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+        }
+        pre {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 14px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.5;
+            margin: 12px 0;
+            white-space: pre-wrap;
+        }
+        code {
+            background: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 12px;
+        }
+        .header {
+            padding: 32px;
+            background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%);
+            border-radius: 6px;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 22px;
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0 0 6px 0;
+        }
+        .header .subtitle {
+            color: #ffc107;
+            margin: 0;
+            font-size: 16px;
+        }
+        .header .meta {
+            color: rgba(255,255,255,0.6);
+            margin: 8px 0 0 0;
+            font-size: 13px;
+        }
+        .process-flow {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+        .step-card {
+            flex: 1;
+            min-width: 140px;
+            max-width: 180px;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .step-header {
+            background: #0078d4;
+            color: #fff;
+            padding: 10px 8px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 12px;
+        }
+        .step-header span {
+            font-size: 10px;
+            display: block;
+        }
+        .step-body {
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .step-user {
+            background: #6f42c1;
+            color: #fff;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            text-align: center;
+        }
+        .step-system {
+            background: #e9ecef;
+            border: 1px solid #adb5bd;
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            text-align: center;
+        }
+        .step-check {
+            background: #fff8e6;
+            border: 1px solid #fd7e14;
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            text-align: center;
+        }
+        .step-info {
+            background: #e7f3ff;
+            border: 1px solid #0078d4;
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            text-align: center;
+        }
+        .arrow {
+            display: flex;
+            align-items: center;
+            color: #adb5bd;
+            font-size: 20px;
+            padding: 40px 4px 0 4px;
+        }
+        .legend {
+            text-align: center;
+            margin-bottom: 16px;
+            font-size: 13px;
+        }
+        .legend span {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            margin: 0 8px;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #6c757d;
+            font-size: 12px;
+            margin-top: 20px;
+        }
+        .diagram-section {
+            background: #faf9f8;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 24px;
+            margin: 20px 0;
+            overflow-x: auto;
+            text-align: center;
+        }
+        .diagram-section img {
+            max-width: 100%;
+            height: auto;
+        }
+        .green { color: #198754; }
+        .red { color: #dc3545; }
+        .toc {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 16px 24px;
+            margin: 20px 0;
+        }
+        .toc h3 {
+            margin-top: 0;
+            margin-bottom: 12px;
+        }
+        .toc ul {
+            margin: 0;
+            padding-left: 20px;
+            columns: 2;
+            column-gap: 40px;
+        }
+        .toc li {
+            margin-bottom: 4px;
+        }
+        .toc a {
+            color: #0078d4;
+            text-decoration: none;
+        }
+        .toc a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <div class="header">
+            <h1>Common Drive Migration</h1>
+            <p class="subtitle">System Documentation</p>
+            <p class="meta">Architecture • Setup • Operations | Version 2.7</p>
+        </div>
+
+        <!-- WARNING -->
+        <div class="note note-warn" style="margin-top: 20px;">
+            <strong>⚠️ IMPORTANT:</strong> Any changes to scripts must be deployed to <strong>all migration servers</strong>. Update one server, test, then deploy to remaining servers.
+        </div>
+
+        <!-- TABLE OF CONTENTS -->
+        <div class="toc">
+            <h3>📑 Table of Contents</h3>
+            <ul>
+                <li><a href="#summary">Executive Summary</a></li>
+                <li><a href="#process">Process Flow (6 Steps)</a></li>
+                <li><a href="#architecture">System Architecture</a></li>
+                <li><a href="#prereqs">Prerequisites</a></li>
+                <li><a href="#features">Key Features</a></li>
+                <li><a href="#scheduling">Scheduling Logic</a></li>
+                <li><a href="#tasks">Scheduled Tasks</a></li>
+                <li><a href="#troubleshoot">Troubleshooting</a></li>
+            </ul>
+        </div>
+
+        <!-- EXECUTIVE SUMMARY -->
+        <div class="section" id="summary">
+            <h2>Executive Summary</h2>
+            <p>Automated file share migration system that migrates on-premises Common Drive data to Microsoft Teams/SharePoint Online. The system uses distributed processing across <strong>6 servers (18 parallel instances)</strong> with app-only authentication for fully unattended operation.</p>
+            <table>
+                <tr><th>Category</th><th>Capabilities</th></tr>
+                <tr>
+                    <td><strong>Scheduling</strong></td>
+                    <td>Timezone-aware windows (EST, CST, MST, PST, AKST, HST) — migrations run <strong>5 PM - 4 AM</strong> local time on weekdays • Large migrations (≥10GB) restricted to weekends and holidays • <strong>ANYTIME</strong> option bypasses all restrictions for 24/7 processing</td>
+                </tr>
+                <tr>
+                    <td><strong>Priority Queuing</strong></td>
+                    <td>Priority 1-10 scale (lower = higher priority, default 5) • FIFO within same priority level • QueuedAt timestamp for fair ordering</td>
+                </tr>
+                <tr>
+                    <td><strong>Data Management</strong></td>
+                    <td>3/5/7 year data retention analysis • Automatic storage quota validation • Post-migration source cleanup (read-only + file deletion + empty folder cleanup)</td>
+                </tr>
+                <tr>
+                    <td><strong>Automation</strong></td>
+                    <td>Automatic Team/Channel resolution via Graph API • Fully unattended app-only authentication • Multiple Azure apps for distributed throttling • 18 parallel SPMT workers</td>
+                </tr>
+                <tr>
+                    <td><strong>Error Handling</strong></td>
+                    <td>Detailed error logging with CSV attachments • Partial migration recovery (MigratedWithErrors) • Automatic retry on transient failures</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- PROCESS FLOW -->
+        <div class="section" id="process">
+            <h2>Process Flow (6 Steps)</h2>
+            
+            <div class="legend">
+                <span style="background:#6f42c1;color:#fff;">👤 USER ACTION</span>
+                <span style="background:#e9ecef;border:1px solid #adb5bd;">⚙️ SYSTEM</span>
+                <span style="background:#fff8e6;border:1px solid #fd7e14;">⚠️ CHECK</span>
+                <span style="background:#e7f3ff;border:1px solid #0078d4;">📋 INFO</span>
+            </div>
+
+            <div class="process-flow">
+                <div class="step-card">
+                    <div class="step-header"><span>STEP 1</span>CREATE ITEM</div>
+                    <div class="step-body">
+                        <div class="step-user">👤 <strong>USER ENTERS:</strong><br>DIV, Title, SourcePath<br>TeamName, TimeZone</div>
+                        <div class="step-info">📋 Or bulk import via CSV</div>
+                    </div>
+                </div>
+                <div class="arrow">→</div>
+                
+                <div class="step-card">
+                    <div class="step-header"><span>STEP 2</span>AUTOMATIC SCAN</div>
+                    <div class="step-body">
+                        <div class="step-system">⚙️ System scans source<br><em>Begins within 5 min</em></div>
+                        <div class="step-check">⚠️ <strong>CHECK:</strong> Errors column</div>
+                        <div class="step-info">📋 <strong>7yr</strong> = data to migrate</div>
+                    </div>
+                </div>
+                <div class="arrow">→</div>
+                
+                <div class="step-card">
+                    <div class="step-header"><span>STEP 3</span>TARGET RESOLUTION</div>
+                    <div class="step-body">
+                        <div class="step-system">⚙️ System resolves Team<br><em>Begins within 5 min</em></div>
+                        <div class="step-check">⚠️ <strong>CHECK:</strong> TargetURL<br><span class="green">🟢 Green</span> = OK<br><span class="red">🔴 Red</span> = Low storage</div>
+                    </div>
+                </div>
+                <div class="arrow">→</div>
+                
+                <div class="step-card">
+                    <div class="step-header"><span>STEP 4</span>QUEUE MIGRATION</div>
+                    <div class="step-body">
+                        <div class="step-user">👤 <strong>USER SETS:</strong><br>Migrate = "Migrate"</div>
+                    </div>
+                </div>
+                <div class="arrow">→</div>
+                
+                <div class="step-card">
+                    <div class="step-header"><span>STEP 5</span>MIGRATION</div>
+                    <div class="step-body">
+                        <div class="step-system">⚙️ Files copied to SPO</div>
+                        <div class="step-check">⚠️ <strong>CHECK:</strong> Result<br><span class="green">🟢 Migrated</span><br><span class="red">🔴 Failed</span></div>
+                    </div>
+                </div>
+                <div class="arrow">→</div>
+                
+                <div class="step-card">
+                    <div class="step-header"><span>STEP 6</span>POST-MIGRATION</div>
+                    <div class="step-body">
+                        <div class="step-system">⚙️ Source read-only<br>Files + empty folders deleted</div>
+                        <div class="step-check">⚠️ Failed files remain<br>→ Fix &amp; migrate again</div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Migration Process Flow Diagram</h3>
+            <div class="diagram-section">
+                <img src="diagrams/migration-process-flow.png" alt="Migration Process Flow Diagram">
+            </div>
+        </div>
+
+        <!-- SYSTEM ARCHITECTURE -->
+        <div class="section" id="architecture">
+            <h2>System Architecture</h2>
+            
+            <h3>Infrastructure (6 Servers)</h3>
+            <table>
+                <tr><th>Datacenter</th><th>Server 1</th><th>Server 2</th><th>Server 3</th></tr>
+                <tr><td><strong>DC1</strong></td><td>dc1-mig-201</td><td>dc1-mig-202</td><td>dc1-mig-203</td></tr>
+                <tr><td><strong>DC2</strong></td><td>dc2-mig-201</td><td>dc2-mig-202</td><td>dc2-mig-203</td></tr>
+            </table>
+            
+            <h3>Component Summary</h3>
+            <table>
+                <tr><th>Component</th><th>Count</th><th>Details</th></tr>
+                <tr><td><strong>Servers</strong></td><td>6</td><td>2 datacenters × 3 servers</td></tr>
+                <tr><td><strong>SPMT Instances</strong></td><td>18</td><td>3 per server for throttle distribution</td></tr>
+                <tr><td><strong>Scheduled Tasks</strong></td><td>30</td><td>5 per server</td></tr>
+                <tr><td><strong>App Registrations</strong></td><td>31</td><td>6 UNC Scan + 6 Targets + 18 SPMT + 1 Dashboard</td></tr>
+                <tr><td><strong>Service Account</strong></td><td>1</td><td>Dedicated migration service account</td></tr>
+                <tr><td><strong>Certificate</strong></td><td>1</td><td>App-only auth (LocalMachine\My)</td></tr>
+            </table>
+
+            <h3>System Architecture Diagram</h3>
+            <div class="diagram-section">
+                <img src="diagrams/system-architecture.png" alt="System Architecture Diagram">
+            </div>
+        </div>
+
+        <!-- PREREQUISITES -->
+        <div class="section" id="prereqs">
+            <h2>Prerequisites</h2>
+            
+            <h3>Software Requirements</h3>
+            <ul>
+                <li>Windows Server 2016 or later</li>
+                <li>PowerShell 5.1 or higher</li>
+                <li>SharePoint Migration Tool (SPMT) 4.2.129.0 or later</li>
+                <li>PnP.PowerShell module 1.12 or later</li>
+            </ul>
+            
+            <h3>Accounts Required</h3>
+            <table>
+                <tr><th>Account</th><th>Purpose</th><th>Requirements</th></tr>
+                <tr><td><code>DOMAIN\svc-migration</code></td><td>Service Account</td><td>Read access to source file shares, network share access</td></tr>
+                <tr><td><code>svc-migration@contoso.com</code></td><td>SPMT Credential Account</td><td>Stored in encrypted credential file</td></tr>
+            </table>
+            
+            <h3>Azure AD App Registration</h3>
+            <table>
+                <tr><th>Setting</th><th>Value</th></tr>
+                <tr><td>App Name</td><td>CommonDriveMigration-SPMT</td></tr>
+                <tr><td>Client ID</td><td><code>&lt;your-app-client-id&gt;</code></td></tr>
+                <tr><td>Tenant ID</td><td><code>&lt;your-tenant-id&gt;</code></td></tr>
+                <tr><td>Certificate Thumbprint</td><td><code>&lt;your-cert-thumbprint&gt;</code></td></tr>
+                <tr><td>Permissions</td><td>Sites.FullControl.All (Application)</td></tr>
+            </table>
+        </div>
+
+        <!-- KEY FEATURES -->
+        <div class="section" id="features">
+            <h2>Key Features</h2>
+            <table>
+                <tr><th>Feature</th><th>Description</th></tr>
+                <tr><td><strong>Distributed Processing</strong></td><td>6 servers × 3 instances = 18 parallel workers</td></tr>
+                <tr><td><strong>Throttle Distribution</strong></td><td>Each instance uses different AppClientId to spread API limits</td></tr>
+                <tr><td><strong>Timezone-aware Scheduling</strong></td><td>Items processed based on user's local timezone (EST, CST, MST, PST, AKST, HST)</td></tr>
+                <tr><td><strong>FIFO Queue</strong></td><td>Items processed in the order they were queued</td></tr>
+                <tr><td><strong>Large Migration Handling</strong></td><td>Migrations ≥10GB restricted to weekends/holidays only</td></tr>
+                <tr><td><strong>ANYTIME Option</strong></td><td>Items with TimeZone=ANYTIME can run 24/7</td></tr>
+                <tr><td><strong>Holiday Support</strong></td><td>Pre-configured holiday list allows all-day processing</td></tr>
+                <tr><td><strong>Claim-based Locking</strong></td><td>ClaimedBy/ClaimedAt prevents duplicate work</td></tr>
+                <tr><td><strong>Age-based Migration</strong></td><td>Only files modified within 7 years are migrated</td></tr>
+                <tr><td><strong>App-only Auth</strong></td><td>Certificate-based, no MFA required</td></tr>
+                <tr><td><strong>Empty Folder Cleanup</strong></td><td>Triple-verified before deletion</td></tr>
+            </table>
+        </div>
+
+        <!-- SCHEDULING LOGIC -->
+        <div class="section" id="scheduling">
+            <h2>Scheduling Logic</h2>
+            
+            <div class="note note-warn">
+                <strong>Size-Based Restrictions:</strong> Large migrations (≥10GB) are restricted to weekends and holidays to minimize impact on users. Use <code>ANYTIME</code> timezone for items that should run 24/7.
+            </div>
+            
+            <h3>Migration Windows by Size</h3>
+            <table>
+                <tr><th>Item Type</th><th>Mon-Thu 5PM-4AM</th><th>Fri 5PM → Mon 4AM</th><th>Holidays</th></tr>
+                <tr><td><strong>Small (&lt;10GB)</strong></td><td><span class="green">✅ Allowed</span></td><td><span class="green">✅ Allowed</span></td><td><span class="green">✅ All day</span></td></tr>
+                <tr><td><strong>Large (≥10GB)</strong></td><td><span class="red">❌ Blocked</span></td><td><span class="green">✅ Allowed</span></td><td><span class="green">✅ All day</span></td></tr>
+                <tr><td><strong>ANYTIME</strong></td><td><span class="green">✅ 24/7</span></td><td><span class="green">✅ 24/7</span></td><td><span class="green">✅ 24/7</span></td></tr>
+            </table>
+            
+            <h3>Supported Timezones</h3>
+            <table>
+                <tr><th>TimeZone</th><th>UTC Offset</th><th>Region</th></tr>
+                <tr><td>EST</td><td>UTC-5 / UTC-4 (DST)</td><td>Eastern</td></tr>
+                <tr><td>CST</td><td>UTC-6 / UTC-5 (DST)</td><td>Central</td></tr>
+                <tr><td>MST</td><td>UTC-7 / UTC-6 (DST)</td><td>Mountain</td></tr>
+                <tr><td>PST</td><td>UTC-8 / UTC-7 (DST)</td><td>Pacific</td></tr>
+                <tr><td>AKST</td><td>UTC-9 / UTC-8 (DST)</td><td>Alaska</td></tr>
+                <tr><td>HST</td><td>UTC-10 (no DST)</td><td>Hawaii</td></tr>
+                <tr><td><strong>ANYTIME</strong></td><td>N/A</td><td>No restrictions - runs 24/7</td></tr>
+            </table>
+        </div>
+
+        <!-- SCHEDULED TASKS -->
+        <div class="section" id="tasks">
+            <h2>Scheduled Tasks (Per Server)</h2>
+            
+            <table>
+                <tr><th>Task</th><th>Interval</th><th>Script</th><th>Purpose</th></tr>
+                <tr><td><strong>UNC Storage Scan</strong></td><td>Every 5 min</td><td><code>Invoke-UNCStorageScan-v2.ps1</code></td><td>Scan new source paths, calculate 3/5/7yr sizes</td></tr>
+                <tr><td><strong>Target Resolution</strong></td><td>Every 5 min</td><td><code>Update-MigrationTargets.v2.ps1</code></td><td>Resolve Teams/Channels, check storage</td></tr>
+                <tr><td><strong>SPMT Worker ×3</strong></td><td>Every 15 min</td><td><code>CommonDriveMigration.v2.ps1</code></td><td>Execute migrations with scheduling</td></tr>
+                <tr><td><strong>Dashboard</strong></td><td>Every 2 hrs</td><td><code>New-MigrationDashboard.ps1</code></td><td>Update stats dashboard page</td></tr>
+                <tr><td><strong>Log Cleanup</strong></td><td>Daily 2 AM</td><td><code>Clear-EmptyMigrationLogs.ps1</code></td><td>Remove old empty log folders</td></tr>
+            </table>
+            
+            <h3>Task Command Line Example</h3>
+            <pre>powershell.exe -NoProfile -ExecutionPolicy Bypass -File "F:\Scripts\CommonDriveMigration.v2.ps1" -AutoRun -MaxItems 1 -Continuous -UseScheduling</pre>
+            
+            <div class="note note-info">
+                <ul style="margin:0;padding-left:20px;">
+                    <li><code>-MaxItems 1</code> = Process one item at a time (no hoarding)</li>
+                    <li><code>-Continuous</code> = Loop until MaxRuntime or queue empty</li>
+                    <li><code>-UseScheduling</code> = Respect timezone windows (5PM-4AM local)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- TROUBLESHOOTING -->
+        <div class="section" id="troubleshoot">
+            <h2>Troubleshooting</h2>
+            
+            <h3>Common Issues</h3>
+            <table>
+                <tr><th>Symptom</th><th>Cause</th><th>Fix</th></tr>
+                <tr><td>Item stuck in "Claimed"</td><td>Previous run crashed</td><td>Clear ClaimedBy/ClaimedAt columns (auto-releases after 2hr)</td></tr>
+                <tr><td>Migration not starting</td><td>Outside migration window</td><td>Wait for 5PM local or use ANYTIME timezone</td></tr>
+                <tr><td>Access denied errors</td><td>Certificate or permission issue</td><td>Verify cert thumbprint, check app permissions</td></tr>
+                <tr><td>TargetURL shows red</td><td>Insufficient storage</td><td>Increase site quota or delete old content</td></tr>
+            </table>
+            
+            <h3>Verify Certificate</h3>
+            <pre><span style="color:#6a9955;"># Verify certificate exists</span>
+<span style="color:#9cdcfe;">$thumbprint</span> = <span style="color:#ce9178;">"&lt;your-cert-thumbprint&gt;"</span>
+Get-ChildItem Cert:\LocalMachine\My | Where-Object { $_.Thumbprint -eq <span style="color:#9cdcfe;">$thumbprint</span> }
+
+<span style="color:#6a9955;"># Check expiration</span>
+Get-ChildItem Cert:\LocalMachine\My | Where-Object { $_.Thumbprint -eq <span style="color:#9cdcfe;">$thumbprint</span> } | 
+    Select-Object Subject, NotAfter</pre>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            Common Drive Migration v2.7 | System Documentation<br/>
+            Author: Douglas Cox - Microsoft Customer Success Architect
+        </div>
+    </div>
+</body>
+</html>
